@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy import create_engine, inspect, select, text
+from sqlalchemy.orm import sessionmaker
+
 from db.models import Base
 
 DATABASE_PATH = Path(__file__).resolve().parent / "moviedb.sqlite"
@@ -23,7 +24,20 @@ def init_db() -> None:
     import db.models as models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+    _migrate_existing_schema()
     _seed_movies()
+
+
+def _migrate_existing_schema() -> None:
+    """Apply the one additive change needed by the pre-existing SQLite database."""
+    inspector = inspect(engine)
+    if "movies" not in inspector.get_table_names():
+        return
+
+    movie_columns = {column["name"] for column in inspector.get_columns("movies")}
+    if "mpaa_rating_id" not in movie_columns:
+        with engine.begin() as connection:
+            connection.execute(text("ALTER TABLE movies ADD COLUMN mpaa_rating_id INTEGER"))
 
 
 def _seed_movies() -> None:
