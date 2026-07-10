@@ -1,9 +1,10 @@
 from pathlib import Path
 
-from sqlalchemy import create_engine, inspect, select, text
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
 from db.models import Base
+from db.seed import seed_database
 
 DATABASE_PATH = Path(__file__).resolve().parent / "moviedb.sqlite"
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
@@ -25,7 +26,7 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
     _migrate_existing_schema()
-    _seed_movies()
+    seed_database(SessionLocal)
 
 
 def _migrate_existing_schema() -> None:
@@ -38,19 +39,3 @@ def _migrate_existing_schema() -> None:
     if "mpaa_rating_id" not in movie_columns:
         with engine.begin() as connection:
             connection.execute(text("ALTER TABLE movies ADD COLUMN mpaa_rating_id INTEGER"))
-
-
-def _seed_movies() -> None:
-    from db.models import Movie
-
-    with SessionLocal() as session:
-        if session.scalar(select(Movie.id).limit(1)) is not None:
-            return
-
-        session.add_all(
-            [
-                Movie(title="The Matrix", release_year=1999),
-                Movie(title="Inception", release_year=2010),
-            ]
-        )
-        session.commit()
