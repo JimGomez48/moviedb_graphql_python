@@ -6,7 +6,7 @@ from strawberry.fastapi import GraphQLRouter
 
 from db.conn import SessionLocal, init_db
 from db.models import Movie
-from graphql_schema import get_graphql_context, schema
+from gql.schema import get_graphql_context, schema
 
 
 @asynccontextmanager
