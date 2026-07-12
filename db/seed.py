@@ -35,7 +35,9 @@ def seed_database(session_factory: type[Session]) -> None:
     )
 
     with session_factory() as session:
-        rated_r = _get_or_create(session, MpaaRating, code="R", description="Restricted")
+        rated_r = _get_or_create(
+            session, MpaaRating, code="R", description="Restricted"
+        )
         rated_pg13 = _get_or_create(
             session,
             MpaaRating,
@@ -50,7 +52,9 @@ def seed_database(session_factory: type[Session]) -> None:
         warner_bros = _get_or_create(session, Company, name="Warner Bros.")
         legendary = _get_or_create(session, Company, name="Legendary Pictures")
 
-        keanu_reeves = _get_or_create(session, Actor, first_name="Keanu", last_name="Reeves")
+        keanu_reeves = _get_or_create(
+            session, Actor, first_name="Keanu", last_name="Reeves"
+        )
         laurence_fishburne = _get_or_create(
             session, Actor, first_name="Laurence", last_name="Fishburne"
         )
@@ -63,7 +67,9 @@ def seed_database(session_factory: type[Session]) -> None:
         joseph_gordon_levitt = _get_or_create(
             session, Actor, first_name="Joseph", last_name="Gordon-Levitt"
         )
-        elliot_page = _get_or_create(session, Actor, first_name="Elliot", last_name="Page")
+        elliot_page = _get_or_create(
+            session, Actor, first_name="Elliot", last_name="Page"
+        )
 
         lana_wachowski = _get_or_create(
             session, Director, first_name="Lana", last_name="Wachowski"
@@ -81,8 +87,14 @@ def seed_database(session_factory: type[Session]) -> None:
         inception.mpaa_rating = rated_pg13
         session.flush()
 
-        for movie, company in ((matrix, warner_bros), (inception, warner_bros), (inception, legendary)):
-            _get_or_create(session, MovieCompany, movie_id=movie.id, company_id=company.id)
+        for movie, company in (
+            (matrix, warner_bros),
+            (inception, warner_bros),
+            (inception, legendary),
+        ):
+            _get_or_create(
+                session, MovieCompany, movie_id=movie.id, company_id=company.id
+            )
 
         for movie, genre in (
             (matrix, science_fiction),
@@ -98,7 +110,9 @@ def seed_database(session_factory: type[Session]) -> None:
             (matrix, lilly_wachowski),
             (inception, christopher_nolan),
         ):
-            _get_or_create(session, MovieDirector, movie_id=movie.id, director_id=director.id)
+            _get_or_create(
+                session, MovieDirector, movie_id=movie.id, director_id=director.id
+            )
 
         for movie, actor, role in (
             (matrix, keanu_reeves, "Neo"),

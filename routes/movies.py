@@ -17,6 +17,4 @@ def list_movies() -> list[dict[str, object]]:
 @router.get("/{entity_id}")
 def get_movie(entity_id: int) -> dict[str, object]:
     with SessionLocal() as session:
-        return serialize_row(
-            get_row_or_404(session, Movie, "movie", entity_id)
-        )
+        return serialize_row(get_row_or_404(session, Movie, "movie", entity_id))

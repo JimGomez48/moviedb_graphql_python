@@ -60,11 +60,21 @@ class Movie(Base):
     mpaa_rating_id: Mapped[int | None] = mapped_column(ForeignKey("mpaa_ratings.id"))
 
     mpaa_rating: Mapped[MpaaRating | None] = relationship(back_populates="movies")
-    reviews: Mapped[list[Review]] = relationship(back_populates="movie", cascade="all, delete-orphan")
-    companies: Mapped[list[MovieCompany]] = relationship(back_populates="movie", cascade="all, delete-orphan")
-    actors: Mapped[list[MovieActor]] = relationship(back_populates="movie", cascade="all, delete-orphan")
-    directors: Mapped[list[MovieDirector]] = relationship(back_populates="movie", cascade="all, delete-orphan")
-    genres: Mapped[list[MovieGenre]] = relationship(back_populates="movie", cascade="all, delete-orphan")
+    reviews: Mapped[list[Review]] = relationship(
+        back_populates="movie", cascade="all, delete-orphan"
+    )
+    companies: Mapped[list[MovieCompany]] = relationship(
+        back_populates="movie", cascade="all, delete-orphan"
+    )
+    actors: Mapped[list[MovieActor]] = relationship(
+        back_populates="movie", cascade="all, delete-orphan"
+    )
+    directors: Mapped[list[MovieDirector]] = relationship(
+        back_populates="movie", cascade="all, delete-orphan"
+    )
+    genres: Mapped[list[MovieGenre]] = relationship(
+        back_populates="movie", cascade="all, delete-orphan"
+    )
 
 
 class Review(Base):
@@ -101,7 +111,9 @@ class MovieActor(Base):
 
     movie: Mapped[Movie] = relationship(back_populates="actors")
     actor: Mapped[Actor] = relationship(back_populates="movie_credits")
-    roles: Mapped[list[MovieActorRole]] = relationship(back_populates="movie_actor", cascade="all, delete-orphan")
+    roles: Mapped[list[MovieActorRole]] = relationship(
+        back_populates="movie_actor", cascade="all, delete-orphan"
+    )
 
 
 class MovieActorRole(Base):
@@ -109,7 +121,9 @@ class MovieActorRole(Base):
     __table_args__ = (UniqueConstraint("movie_actor_id", "role"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    movie_actor_id: Mapped[int] = mapped_column(ForeignKey("movie_actors.id"), nullable=False)
+    movie_actor_id: Mapped[int] = mapped_column(
+        ForeignKey("movie_actors.id"), nullable=False
+    )
     role: Mapped[str] = mapped_column(String(255), nullable=False)
 
     movie_actor: Mapped[MovieActor] = relationship(back_populates="roles")

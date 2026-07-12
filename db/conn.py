@@ -38,4 +38,6 @@ def _migrate_existing_schema() -> None:
     movie_columns = {column["name"] for column in inspector.get_columns("movies")}
     if "mpaa_rating_id" not in movie_columns:
         with engine.begin() as connection:
-            connection.execute(text("ALTER TABLE movies ADD COLUMN mpaa_rating_id INTEGER"))
+            connection.execute(
+                text("ALTER TABLE movies ADD COLUMN mpaa_rating_id INTEGER")
+            )

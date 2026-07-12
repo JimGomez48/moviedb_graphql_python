@@ -1,6 +1,9 @@
 import strawberry
 from sqlalchemy import select
-from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader, StrawberrySQLAlchemyMapper
+from strawberry_sqlalchemy_mapper import (
+    StrawberrySQLAlchemyLoader,
+    StrawberrySQLAlchemyMapper,
+)
 from strawberry_sqlalchemy_mapper import field as sqlalchemy_field
 from strawberry_sqlalchemy_mapper.field import connection_session
 
@@ -20,7 +23,9 @@ from db.models import (
     Review,
 )
 
-mapper = StrawberrySQLAlchemyMapper(model_to_type_name=lambda model: f"{model.__name__}Type")
+mapper = StrawberrySQLAlchemyMapper(
+    model_to_type_name=lambda model: f"{model.__name__}Type"
+)
 
 
 @mapper.type(Movie)
