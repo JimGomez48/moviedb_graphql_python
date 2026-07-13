@@ -3,9 +3,9 @@ from strawberry_sqlalchemy_mapper import (
     StrawberrySQLAlchemyMapper,
     field as sqlalchemy_field,
 )
-from strawberry_sqlalchemy_mapper.field import connection_session
 from sqlalchemy import select
 
+from moviedb.core.db.conn import get_session
 from moviedb.core.db.models import (
     Actor,
     Company,
@@ -63,31 +63,38 @@ mapper.finalize()
 class Query:
     @sqlalchemy_field
     def actors(self) -> list[ActorType]:
-        return list(connection_session.get().scalars(select(Actor)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Actor)).all())
 
     @sqlalchemy_field
     def directors(self) -> list[DirectorType]:
-        return list(connection_session.get().scalars(select(Director)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Director)).all())
 
     @sqlalchemy_field
     def mpaa_ratings(self) -> list[MpaaRatingType]:
-        return list(connection_session.get().scalars(select(MpaaRating)).all())
+        with get_session() as session:
+            return list(session.scalars(select(MpaaRating)).all())
 
     @sqlalchemy_field
     def genres(self) -> list[GenreType]:
-        return list(connection_session.get().scalars(select(Genre)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Genre)).all())
 
     @sqlalchemy_field
     def companies(self) -> list[CompanyType]:
-        return list(connection_session.get().scalars(select(Company)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Company)).all())
 
     @sqlalchemy_field
     def movies(self) -> list[MovieType]:
-        return list(connection_session.get().scalars(select(Movie)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Movie)).all())
 
     @sqlalchemy_field
     def reviews(self) -> list[ReviewType]:
-        return list(connection_session.get().scalars(select(Review)).all())
+        with get_session() as session:
+            return list(session.scalars(select(Review)).all())
 
 
 schema = strawberry.Schema(query=Query)
