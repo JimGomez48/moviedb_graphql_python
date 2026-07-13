@@ -1,24 +1,9 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 
-from moviedb.routes import (
-    actors,
-    mpaa_ratings,
-    reviews,
-)
-from moviedb.routes import genres, companies, movies, system, directors
-from moviedb.routes.graphql import router as graphql_router
-
-api_router = APIRouter()
-api_router.include_router(system.router)
-api_router.include_router(movies.router)
-api_router.include_router(actors.router)
-api_router.include_router(directors.router)
-api_router.include_router(mpaa_ratings.router)
-api_router.include_router(genres.router)
-api_router.include_router(companies.router)
-api_router.include_router(reviews.router)
+from moviedb.routes.rest import router as rest_router
+from moviedb.routes.gql import router as graphql_router
 
 
 def register_routes(app: FastAPI) -> None:
-    app.include_router(api_router)
+    app.include_router(rest_router, prefix="/rest")
     app.include_router(graphql_router, prefix="/graphql")
