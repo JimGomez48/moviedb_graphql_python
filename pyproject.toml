@@ -1,5 +1,5 @@
 [project]
-name = "moviedb-graphql-python"
+name = "moviedb"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -10,6 +10,13 @@ dependencies = [
     "strawberry-sqlalchemy-mapper>=0.8.0",
     "uvicorn[standard]>=0.34.0",
 ]
+
+[build-system]
+requires = ["uv-build>=0.6.0,<0.7.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = true
 
 [dependency-groups]
 dev = [

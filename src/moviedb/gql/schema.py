@@ -7,8 +7,8 @@ from strawberry_sqlalchemy_mapper import (
 from strawberry_sqlalchemy_mapper import field as sqlalchemy_field
 from strawberry_sqlalchemy_mapper.field import connection_session
 
-from db.conn import SessionLocal, get_session
-from db.models import (
+from moviedb.db.conn import SessionLocal, get_session
+from moviedb.db.models import (
     Actor,
     Company,
     Director,

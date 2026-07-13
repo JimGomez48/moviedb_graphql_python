@@ -187,9 +187,9 @@ wheels = [
 ]
 
 [[package]]
-name = "moviedb-graphql-python"
+name = "moviedb"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "sqlalchemy" },
     { name = "strawberry-graphql", extra = ["fastapi"] },

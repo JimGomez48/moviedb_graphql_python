@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from db.conn import init_db
-from routes import register_routes
+from moviedb.db.conn import init_db
+from moviedb.routes import register_routes
 
 
 @asynccontextmanager

@@ -19,7 +19,7 @@ def _get_or_create(
 
 def seed_database(session_factory: type[Session]) -> None:
     """Seed the database with a small, connected movie catalog."""
-    from db.models import (
+    from moviedb.db.models import (
         Actor,
         Company,
         Director,

@@ -1,16 +1,12 @@
 from fastapi import APIRouter, FastAPI
 
-from routes import (
+from moviedb.routes import (
     actors,
-    companies,
-    directors,
-    genres,
-    movies,
     mpaa_ratings,
     reviews,
-    system,
 )
-from routes.graphql import router as graphql_router
+from moviedb.routes import genres, companies, movies, system, directors
+from moviedb.routes.graphql import router as graphql_router
 
 api_router = APIRouter()
 api_router.include_router(system.router)

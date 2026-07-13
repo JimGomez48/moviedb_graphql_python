@@ -3,8 +3,8 @@ from pathlib import Path
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
-from db.models import Base
-from db.seed import seed_database
+from moviedb.db.models import Base
+from moviedb.db.seed import seed_database
 
 DATABASE_PATH = Path(__file__).resolve().parent / "moviedb.sqlite"
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
@@ -22,8 +22,6 @@ def get_session():
 
 
 def init_db() -> None:
-    import db.models as models  # noqa: F401
-
     Base.metadata.create_all(bind=engine)
     _migrate_existing_schema()
     seed_database(SessionLocal)
