@@ -1,6 +1,6 @@
 from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader
 
-from moviedb.db.conn import get_session
+from moviedb.core.db.conn import get_session
 
 
 async def get_graphql_context():

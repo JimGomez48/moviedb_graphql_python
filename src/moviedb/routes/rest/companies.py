@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from sqlalchemy import select
 
-from moviedb.db.conn import SessionLocal
-from moviedb.db.models import Company
+from moviedb.core.db.conn import SessionLocal
+from moviedb.core.db.models import Company
 from .utils import get_row_or_404, serialize_row, serialize_rows
 
 router = APIRouter(prefix="/companies", tags=["companies"])

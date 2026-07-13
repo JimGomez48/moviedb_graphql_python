@@ -2,6 +2,8 @@
 
 ## Install Dependencies
 
+Ensure [uv package manager](https://docs.astral.sh/uv/getting-started/installation/) is installed in your development environment
+
 ```shell
 uv sync
 ```
@@ -9,5 +11,5 @@ uv sync
 ## Run the app
 
 ```shell
-uv run uvicorn main:app --reload
+python src/moviedb/main.py
 ```

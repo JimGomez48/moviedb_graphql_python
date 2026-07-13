@@ -6,7 +6,7 @@ from strawberry_sqlalchemy_mapper import (
 from strawberry_sqlalchemy_mapper.field import connection_session
 from sqlalchemy import select
 
-from moviedb.db.models import (
+from moviedb.core.db.models import (
     Actor,
     Company,
     Director,

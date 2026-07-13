@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from moviedb.db.conn import init_db
+from moviedb.core.db.conn import init_db
 from moviedb.routes import register_routes
 
 
