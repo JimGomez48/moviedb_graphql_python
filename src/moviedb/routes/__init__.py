@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from moviedb.routes.rest import router as rest_router
-from moviedb.routes.gql import router as graphql_router
+from .rest import router as rest_router
+from .gql import router as graphql_router
 
 
 def register_routes(app: FastAPI) -> None:

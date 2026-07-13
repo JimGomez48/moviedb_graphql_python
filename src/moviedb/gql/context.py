@@ -1,4 +1,4 @@
-from strawberry_sqlalchemy_mapper.field import StrawberrySQLAlchemyLoader
+from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader
 
 from moviedb.db.conn import get_session
 

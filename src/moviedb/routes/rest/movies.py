@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from moviedb.db.conn import SessionLocal
 from moviedb.db.models import Movie
-from moviedb.routes.common import get_row_or_404, serialize_row, serialize_rows
+from .utils import get_row_or_404, serialize_row, serialize_rows
 
 router = APIRouter(prefix="/movies", tags=["movies"])
 

@@ -3,8 +3,8 @@ from pathlib import Path
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
-from moviedb.db.models import Base
-from moviedb.db.seed import seed_database
+from .models import Base
+from .seed import seed_database
 
 DATABASE_PATH = Path(__file__).resolve().parent / "moviedb.sqlite"
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"

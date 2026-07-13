@@ -1,11 +1,6 @@
 from fastapi import APIRouter
 
-from moviedb.routes import (
-    actors,
-    mpaa_ratings,
-    reviews,
-)
-from moviedb.routes import genres, companies, movies, directors
+from . import actors, mpaa_ratings, reviews, genres, companies, movies, directors
 
 router = APIRouter()
 
