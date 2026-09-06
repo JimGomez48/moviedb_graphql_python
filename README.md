@@ -11,5 +11,21 @@ uv sync
 ## Run the app
 
 ```shell
-python src/moviedb/main.py
+uv run python src/moviedb/main.py
+```
+
+## Format code and run linting
+
+```shell
+uv run ruff format ./
+```
+
+```shell
+uv run ruff check ./
+```
+
+## Run unit tests
+
+```shell
+uv run pytest
 ```
