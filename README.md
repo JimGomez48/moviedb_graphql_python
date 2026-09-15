@@ -11,7 +11,7 @@ uv sync
 ## Run the app
 
 ```shell
-uv run python src/moviedb/main.py
+uv run fastapi dev
 ```
 
 ## Format code and run linting
