@@ -1,20 +1,27 @@
-from fastapi import APIRouter
-from sqlalchemy import select
+from fastapi import APIRouter, Depends
+from fastapi_pagination import Page, pagination_ctx
 
 from moviedb.core.db.conn import SessionLocal
 from moviedb.core.db.models import Director
-from .utils import get_row_or_404, serialize_row, serialize_rows
+from moviedb.schemas.directors import DirectorRead
+
+from .utils import get_row_or_404, paginate_rows
 
 router = APIRouter(prefix="/directors", tags=["directors"])
 
+ListPage = Page[DirectorRead]
+list_pagination = Depends(pagination_ctx(ListPage))
 
-@router.get("/")
-def list_directors() -> list[dict[str, object]]:
+
+@router.get("/", dependencies=[list_pagination])
+def list_directors() -> ListPage:
     with SessionLocal() as session:
-        return serialize_rows(session.scalars(select(Director)).all())
+        return paginate_rows(session, Director, DirectorRead)
 
 
 @router.get("/{entity_id}")
-def get_director(entity_id: int) -> dict[str, object]:
+def get_director(entity_id: int) -> DirectorRead:
     with SessionLocal() as session:
-        return serialize_row(get_row_or_404(session, Director, "director", entity_id))
+        return DirectorRead.model_validate(
+            get_row_or_404(session, Director, "director", entity_id)
+        )

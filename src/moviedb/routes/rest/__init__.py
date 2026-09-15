@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import actors, mpaa_ratings, reviews, genres, companies, movies, directors
+from . import actors, companies, directors, genres, movies, mpaa_ratings, reviews
 
 router = APIRouter()
 

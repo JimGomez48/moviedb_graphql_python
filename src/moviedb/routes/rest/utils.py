@@ -1,22 +1,22 @@
-from collections.abc import Iterable
-from typing import TypeVar
-
 from fastapi import HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
+from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.orm import DeclarativeBase, Session
 
-ModelType = TypeVar("ModelType", bound=DeclarativeBase)
+
+def paginate_rows[ModelType: DeclarativeBase, SchemaType: BaseModel](
+    session: Session, model: type[ModelType], schema: type[SchemaType]
+) -> Page[SchemaType]:
+    return paginate(
+        session,
+        select(model).order_by(model.id),
+        transformer=lambda rows: [schema.model_validate(row) for row in rows],
+    )
 
 
-def serialize_row(row: DeclarativeBase) -> dict[str, object]:
-    """Return mapped column values without exposing SQLAlchemy internals."""
-    return {column.key: getattr(row, column.key) for column in row.__table__.columns}
-
-
-def serialize_rows(rows: Iterable[DeclarativeBase]) -> list[dict[str, object]]:
-    return [serialize_row(row) for row in rows]
-
-
-def get_row_or_404(
+def get_row_or_404[ModelType: DeclarativeBase](
     session: Session, model: type[ModelType], entity_name: str, entity_id: int
 ) -> ModelType:
     row = session.get(model, entity_id)

@@ -1,20 +1,27 @@
-from fastapi import APIRouter
-from sqlalchemy import select
+from fastapi import APIRouter, Depends
+from fastapi_pagination import Page, pagination_ctx
 
 from moviedb.core.db.conn import SessionLocal
 from moviedb.core.db.models import Genre
-from .utils import get_row_or_404, serialize_row, serialize_rows
+from moviedb.schemas.genres import GenreRead
+
+from .utils import get_row_or_404, paginate_rows
 
 router = APIRouter(prefix="/genres", tags=["genres"])
 
+ListPage = Page[GenreRead]
+list_pagination = Depends(pagination_ctx(ListPage))
 
-@router.get("/")
-def list_genres() -> list[dict[str, object]]:
+
+@router.get("/", dependencies=[list_pagination])
+def list_genres() -> ListPage:
     with SessionLocal() as session:
-        return serialize_rows(session.scalars(select(Genre)).all())
+        return paginate_rows(session, Genre, GenreRead)
 
 
 @router.get("/{entity_id}")
-def get_genre(entity_id: int) -> dict[str, object]:
+def get_genre(entity_id: int) -> GenreRead:
     with SessionLocal() as session:
-        return serialize_row(get_row_or_404(session, Genre, "genre", entity_id))
+        return GenreRead.model_validate(
+            get_row_or_404(session, Genre, "genre", entity_id)
+        )
