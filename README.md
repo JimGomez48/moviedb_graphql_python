@@ -24,6 +24,12 @@ uv run ruff format ./
 uv run ruff check ./
 ```
 
+## Type check
+
+```shell
+uv run ty check
+```
+
 ## Run unit tests
 
 ```shell
