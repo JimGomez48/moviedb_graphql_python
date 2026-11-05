@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Session
 ModelType = TypeVar("ModelType", bound=DeclarativeBase)
 
 
-def _get_or_create(
+def _get_or_create[ModelType: DeclarativeBase](
     session: Session, model: type[ModelType], **attributes: object
 ) -> ModelType:
     row = session.scalar(select(model).filter_by(**attributes))

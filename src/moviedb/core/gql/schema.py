@@ -1,9 +1,11 @@
 import strawberry
+from sqlalchemy import select
 from strawberry_sqlalchemy_mapper import (
     StrawberrySQLAlchemyMapper,
+)
+from strawberry_sqlalchemy_mapper import (
     field as sqlalchemy_field,
 )
-from sqlalchemy import select
 
 from moviedb.core.db.conn import get_session
 from moviedb.core.db.models import (
