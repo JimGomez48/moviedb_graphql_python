@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import inspect, select
 from sqlalchemy.orm import DeclarativeBase, Session
 
 
@@ -11,7 +11,7 @@ def paginate_rows[ModelType: DeclarativeBase, SchemaType: BaseModel](
 ) -> Page[SchemaType]:
     return paginate(
         session,
-        select(model).order_by(model.id),
+        select(model).order_by(*inspect(model).primary_key),
         transformer=lambda rows: [schema.model_validate(row) for row in rows],
     )
 

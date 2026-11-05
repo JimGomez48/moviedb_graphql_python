@@ -1,7 +1,7 @@
 from typing import TypeVar
 
 from sqlalchemy import select
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 ModelType = TypeVar("ModelType", bound=DeclarativeBase)
 
@@ -17,7 +17,7 @@ def _get_or_create[ModelType: DeclarativeBase](
     return row
 
 
-def seed_database(session_factory: type[Session]) -> None:
+def seed_database(session_factory: sessionmaker[Session]) -> None:
     """Seed the database with a small, connected movie catalog."""
     from moviedb.core.db.models import (
         Actor,
