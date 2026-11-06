@@ -2,17 +2,24 @@ from collections.abc import Collection
 
 from sqlalchemy.orm import Session
 
-from moviedb.core.db.models import Genre, MovieGenre
-from moviedb.schemas.genres import GenreCreate, GenreRead
+from moviedb.core.db import models
+from moviedb.core.domain.genres import Genre, NewGenre
 
 from .base import Repository
 
 
-class GenreRepository(Repository[Genre, GenreRead, GenreCreate]):
-    def __init__(self, session: Session) -> None:
-        super().__init__(session, Genre, GenreRead)
+def _to_genre(row: models.Genre) -> Genre:
+    return Genre(
+        id=row.id,
+        name=row.name,
+    )
 
-    def list_by_movie_ids(
-        self, movie_ids: Collection[int]
-    ) -> dict[int, list[GenreRead]]:
-        return self._linked(MovieGenre.genre_id, MovieGenre.movie_id, movie_ids)
+
+class GenreRepository(Repository[models.Genre, Genre, NewGenre]):
+    def __init__(self, session: Session) -> None:
+        super().__init__(session, models.Genre, _to_genre)
+
+    def list_by_movie_ids(self, movie_ids: Collection[int]) -> dict[int, list[Genre]]:
+        return self._linked(
+            models.MovieGenre.genre_id, models.MovieGenre.movie_id, movie_ids
+        )

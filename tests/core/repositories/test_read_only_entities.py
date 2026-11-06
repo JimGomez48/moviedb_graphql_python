@@ -1,3 +1,4 @@
+import dataclasses
 import importlib
 
 import pytest
@@ -12,22 +13,24 @@ ids = [spec.name for spec in READ_ONLY_ENTITIES]
 
 def _load(spec: EntitySpec):
     repo = getattr(importlib.import_module(spec.repo_module), spec.repo_class)
-    schema = getattr(importlib.import_module(spec.schema_module), spec.schema_class)
-    return repo, schema
+    domain = getattr(importlib.import_module(spec.domain_module), spec.domain_class)
+    return repo, domain
 
 
 @pytest.mark.parametrize("spec", READ_ONLY_ENTITIES, ids=ids)
-def test_get_returns_schema_never_orm_model(session: Session, spec: EntitySpec) -> None:
+def test_get_returns_domain_model_never_orm_model(
+    session: Session, spec: EntitySpec
+) -> None:
     # Arrange
-    repo_cls, schema_cls = _load(spec)
+    repo_cls, domain_cls = _load(spec)
     seed_entity(session, spec)
 
     # Act
     found = repo_cls(session).get(1)
 
     # Assert
-    assert isinstance(found, schema_cls)
-    assert found.model_dump() == spec.expected
+    assert isinstance(found, domain_cls)
+    assert dataclasses.asdict(found) == spec.expected
 
 
 @pytest.mark.parametrize("spec", READ_ONLY_ENTITIES, ids=ids)
@@ -40,9 +43,9 @@ def test_get_returns_none_when_missing(session: Session, spec: EntitySpec) -> No
 
 
 @pytest.mark.parametrize("spec", READ_ONLY_ENTITIES, ids=ids)
-def test_list_page_returns_schemas(session: Session, spec: EntitySpec) -> None:
+def test_list_page_returns_domain_models(session: Session, spec: EntitySpec) -> None:
     # Arrange
-    repo_cls, schema_cls = _load(spec)
+    repo_cls, domain_cls = _load(spec)
     seed_entity(session, spec, count=2)
 
     # Act
@@ -50,4 +53,4 @@ def test_list_page_returns_schemas(session: Session, spec: EntitySpec) -> None:
 
     # Assert
     assert page.total == 2
-    assert all(isinstance(item, schema_cls) for item in page.items)
+    assert all(isinstance(item, domain_cls) for item in page.items)

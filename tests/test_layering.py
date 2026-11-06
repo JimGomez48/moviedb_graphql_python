@@ -5,7 +5,7 @@ import pytest
 
 SRC = Path(__file__).resolve().parent.parent / "src" / "moviedb"
 FORBIDDEN_PREFIX = "moviedb.core.db"
-LAYERS_WITHOUT_DB_ACCESS = ["routes", "core/services", "schemas"]
+LAYERS_WITHOUT_DB_ACCESS = ["routes", "core/services", "core/domain"]
 
 
 def _imported_modules(path: Path) -> set[str]:

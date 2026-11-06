@@ -6,7 +6,7 @@ class NewMpaaRating:
     """Data needed to create a mpaarating; the database assigns the id."""
 
     code: str
-    description: str | None
+    description: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

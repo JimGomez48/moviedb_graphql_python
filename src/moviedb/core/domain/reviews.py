@@ -6,9 +6,9 @@ class NewReview:
     """Data needed to create a review; the database assigns the id."""
 
     movie_id: int
-    reviewer: str | None
-    rating: int | None
-    body: str | None
+    reviewer: str | None = None
+    rating: int | None = None
+    body: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

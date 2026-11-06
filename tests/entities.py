@@ -17,8 +17,8 @@ class EntitySpec:
     repo_class: str
     service_module: str
     service_class: str
-    schema_module: str
-    schema_class: str
+    domain_module: str
+    domain_class: str
     prerequisites: tuple[tuple[type, dict[str, Any]], ...] = ()
 
 
@@ -33,8 +33,8 @@ def _spec(name, path, module, model, cls, seed, expected, prerequisites=()):
         repo_class=f"{cls}Repository",
         service_module=f"moviedb.core.services.{module}",
         service_class=f"{cls}Service",
-        schema_module=f"moviedb.schemas.{module}",
-        schema_class=f"{cls}Read",
+        domain_module=f"moviedb.core.domain.{module}",
+        domain_class=cls,
         prerequisites=prerequisites,
     )
 

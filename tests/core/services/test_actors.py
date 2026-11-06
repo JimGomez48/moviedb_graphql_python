@@ -1,18 +1,19 @@
+import dataclasses
 from unittest.mock import create_autospec
 
 import pytest
 
+from moviedb.core.domain.actors import Actor, NewActor
 from moviedb.core.errors import NotFoundError
 from moviedb.core.pagination import PageParams, PageResult
 from moviedb.core.repositories.actors import ActorRepository
 from moviedb.core.services.actors import ActorService
-from moviedb.schemas.actors import ActorCreate, ActorRead
 
 
 def test_get_returns_actor_from_repository() -> None:
     # Arrange
     repo = create_autospec(ActorRepository, instance=True)
-    repo.get.return_value = ActorRead(id=1, first_name="Ada", last_name="Lovelace")
+    repo.get.return_value = Actor(id=1, first_name="Ada", last_name="Lovelace")
     service = ActorService(repo)
 
     # Act
@@ -38,8 +39,8 @@ def test_get_raises_not_found_when_missing() -> None:
 def test_create_delegates_to_repository() -> None:
     # Arrange
     repo = create_autospec(ActorRepository, instance=True)
-    data = ActorCreate(first_name="Ada", last_name="Lovelace")
-    repo.create.return_value = ActorRead(id=7, **data.model_dump())
+    data = NewActor(first_name="Ada", last_name="Lovelace")
+    repo.create.return_value = Actor(id=7, **dataclasses.asdict(data))
     service = ActorService(repo)
 
     # Act

@@ -1,11 +1,12 @@
+import dataclasses
 from unittest.mock import create_autospec
 
 import pytest
 
+from moviedb.core.domain.movies import Movie, NewMovie
 from moviedb.core.errors import NotFoundError
 from moviedb.core.repositories.movies import MovieRepository
 from moviedb.core.services.movies import MovieService
-from moviedb.schemas.movies import MovieCreate, MovieRead
 
 
 def test_get_raises_not_found_when_missing() -> None:
@@ -22,8 +23,8 @@ def test_get_raises_not_found_when_missing() -> None:
 def test_create_delegates_to_repository() -> None:
     # Arrange
     repo = create_autospec(MovieRepository, instance=True)
-    data = MovieCreate(title="Barbie", release_year=2023)
-    repo.create.return_value = MovieRead(id=1, **data.model_dump())
+    data = NewMovie(title="Barbie", release_year=2023)
+    repo.create.return_value = Movie(id=1, **dataclasses.asdict(data))
 
     # Act
     created = MovieService(repo).create(data)

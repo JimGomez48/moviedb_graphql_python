@@ -38,12 +38,3 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = "-v --asyncio-mode=auto --cov=moviedb --cov-report=term --cov-report=term-missing"
-
-# ty does not model Strawberry's Pydantic decorator: it treats the decorated
-# classes as variables rather than types in annotations. Scoped to the GraphQL
-# adapter package only.
-[[tool.ty.overrides]]
-include = ["src/moviedb/routes/gql/**"]
-
-[tool.ty.overrides.rules]
-invalid-type-form = "ignore"

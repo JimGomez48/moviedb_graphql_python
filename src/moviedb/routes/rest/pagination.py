@@ -1,5 +1,6 @@
 """Adapts HTTP query parameters and core paging types to fastapi-pagination."""
 
+from collections.abc import Callable
 from typing import Annotated
 
 from fastapi import Depends, Query
@@ -25,6 +26,9 @@ def get_page_params(
 PageParamsDep = Annotated[PageParams, Depends(get_page_params)]
 
 
-def to_page[T](page_type: type[Page[T]], result: PageResult[T]) -> Page[T]:
+def to_page[D, T](
+    page_type: type[Page[T]], result: PageResult[D], to_transport: Callable[[D], T]
+) -> Page[T]:
     params = Params(page=result.params.page, size=result.params.size)
-    return page_type.create(result.items, params, total=result.total)
+    items = [to_transport(item) for item in result.items]
+    return page_type.create(items, params, total=result.total)

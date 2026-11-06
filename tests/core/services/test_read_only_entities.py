@@ -12,16 +12,16 @@ ids = [spec.name for spec in READ_ONLY_ENTITIES]
 def _load(spec: EntitySpec):
     repo = getattr(importlib.import_module(spec.repo_module), spec.repo_class)
     service = getattr(importlib.import_module(spec.service_module), spec.service_class)
-    schema = getattr(importlib.import_module(spec.schema_module), spec.schema_class)
-    return repo, service, schema
+    domain = getattr(importlib.import_module(spec.domain_module), spec.domain_class)
+    return repo, service, domain
 
 
 @pytest.mark.parametrize("spec", READ_ONLY_ENTITIES, ids=ids)
 def test_get_returns_entity(spec: EntitySpec) -> None:
     # Arrange
-    repo_cls, service_cls, schema_cls = _load(spec)
+    repo_cls, service_cls, domain_cls = _load(spec)
     repo = create_autospec(repo_cls, instance=True)
-    entity = schema_cls(**spec.expected)
+    entity = domain_cls(**spec.expected)
     repo.get.return_value = entity
 
     # Act

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from moviedb.core.domain.actors import Actor, CastMember
 from moviedb.core.repositories.actors import ActorRepository
 from moviedb.core.repositories.companies import CompanyRepository
 from moviedb.core.repositories.directors import DirectorRepository
@@ -7,7 +8,6 @@ from moviedb.core.repositories.genres import GenreRepository
 from moviedb.core.repositories.movies import MovieRepository
 from moviedb.core.repositories.mpaa_ratings import MpaaRatingRepository
 from moviedb.core.repositories.reviews import ReviewRepository
-from moviedb.schemas.actors import ActorRead, CastMemberRead
 from tests.catalog import seed_catalog
 
 
@@ -91,13 +91,13 @@ def test_cast_grouped_by_movie_includes_roles(session: Session) -> None:
 
     # Assert
     assert set(cast) == {1, 2}
-    assert all(isinstance(member, CastMemberRead) for member in cast[1])
+    assert all(isinstance(member, CastMember) for member in cast[1])
     assert [(c.actor.first_name, c.roles) for c in cast[1]] == [
-        ("Keanu", ["Neo", "Thomas"]),
-        ("Laurence", ["Morpheus"]),
+        ("Keanu", ("Neo", "Thomas")),
+        ("Laurence", ("Morpheus",)),
     ]
-    assert isinstance(cast[2][0].actor, ActorRead)
-    assert cast[2][0].roles == ["Jack"]
+    assert isinstance(cast[2][0].actor, Actor)
+    assert cast[2][0].roles == ("Jack",)
 
 
 def test_movies_grouped_by_actor_director_genre_company(session: Session) -> None:
