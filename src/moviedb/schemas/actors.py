@@ -14,3 +14,10 @@ class ActorRead(ActorBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
+
+class CastMemberRead(BaseModel):
+    """An actor's participation in one movie, with the roles they played."""
+
+    actor: ActorRead
+    roles: list[str]

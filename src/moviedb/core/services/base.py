@@ -1,3 +1,5 @@
+from collections.abc import Collection
+
 from pydantic import BaseModel
 
 from moviedb.core.errors import NotFoundError
@@ -20,3 +22,6 @@ class Service[ReadType: BaseModel]:
         if entity is None:
             raise NotFoundError(self._entity_name, entity_id)
         return entity
+
+    def get_many(self, entity_ids: Collection[int]) -> dict[int, ReadType]:
+        return self._repository.get_many(entity_ids)

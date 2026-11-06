@@ -27,8 +27,8 @@
 - New code follows this layering. When touching existing routes that query the DB directly, migrate them to the layered structure.
 
 ## GraphQL Rules
-- Derive Strawberry types from SQLAlchemy models with `strawberry-sqlalchemy-mapper` where possible; do not hand-duplicate fields.
-- Prevent N+1 queries: use dataloaders or eager loading (`selectinload`/`joinedload`) for relationships.
+- Derive Strawberry types from the Pydantic read schemas in `schemas/` with `strawberry.experimental.pydantic`; do not hand-duplicate fields and never import ORM models in `routes/gql`.
+- Prevent N+1 queries: resolve relationships through per-request dataloaders (`routes/gql/loaders.py`) that call batch service methods.
 - GraphQL resolvers call services, same as REST routers.
 
 ## Code Rules
