@@ -1,11 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi_pagination import Page, pagination_ctx
 
-from moviedb.core.db.conn import SessionLocal
-from moviedb.core.db.models import Director
+from moviedb.dependencies import DirectorServiceDep
 from moviedb.schemas.directors import DirectorRead
-
-from .utils import get_row_or_404, paginate_rows
 
 router = APIRouter(prefix="/directors", tags=["directors"])
 
@@ -14,14 +11,10 @@ list_pagination = Depends(pagination_ctx(ListPage))
 
 
 @router.get("/", dependencies=[list_pagination])
-def list_directors() -> ListPage:
-    with SessionLocal() as session:
-        return paginate_rows(session, Director, DirectorRead)
+def list_directors(service: DirectorServiceDep) -> ListPage:
+    return service.list()
 
 
-@router.get("/{entity_id}")
-def get_director(entity_id: int) -> DirectorRead:
-    with SessionLocal() as session:
-        return DirectorRead.model_validate(
-            get_row_or_404(session, Director, "director", entity_id)
-        )
+@router.get("/{director_id}")
+def get_director(director_id: int, service: DirectorServiceDep) -> DirectorRead:
+    return service.get(director_id)

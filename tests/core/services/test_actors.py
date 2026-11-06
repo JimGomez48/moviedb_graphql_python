@@ -1,0 +1,49 @@
+from unittest.mock import create_autospec
+
+import pytest
+
+from moviedb.core.errors import NotFoundError
+from moviedb.core.repositories.actors import ActorRepository
+from moviedb.core.services.actors import ActorService
+from moviedb.schemas.actors import ActorCreate, ActorRead
+
+
+def test_get_returns_actor_from_repository() -> None:
+    # Arrange
+    repo = create_autospec(ActorRepository, instance=True)
+    repo.get.return_value = ActorRead(id=1, first_name="Ada", last_name="Lovelace")
+    service = ActorService(repo)
+
+    # Act
+    actor = service.get(1)
+
+    # Assert
+    assert actor.id == 1
+    repo.get.assert_called_once_with(1)
+
+
+def test_get_raises_not_found_when_missing() -> None:
+    # Arrange
+    repo = create_autospec(ActorRepository, instance=True)
+    repo.get.return_value = None
+    service = ActorService(repo)
+
+    # Act / Assert
+    with pytest.raises(NotFoundError) as exc_info:
+        service.get(42)
+    assert str(exc_info.value) == "actor with id 42 was not found"
+
+
+def test_create_delegates_to_repository() -> None:
+    # Arrange
+    repo = create_autospec(ActorRepository, instance=True)
+    data = ActorCreate(first_name="Ada", last_name="Lovelace")
+    repo.create.return_value = ActorRead(id=7, **data.model_dump())
+    service = ActorService(repo)
+
+    # Act
+    created = service.create(data)
+
+    # Assert
+    assert created.id == 7
+    repo.create.assert_called_once_with(data)

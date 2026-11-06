@@ -32,3 +32,9 @@ dev = [
     "ruff>=0.15.21",
     "ty>=0.0.97",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-v --asyncio-mode=auto --cov=moviedb --cov-report=term --cov-report=term-missing"

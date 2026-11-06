@@ -14,3 +14,5 @@ wheels/
 
 # SQLite databases
 *.sqlite
+
+.coverage
