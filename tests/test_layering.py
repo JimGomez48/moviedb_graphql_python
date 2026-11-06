@@ -4,8 +4,6 @@ from pathlib import Path
 import pytest
 
 SRC = Path(__file__).resolve().parent.parent / "src" / "moviedb"
-FORBIDDEN_PREFIX = "moviedb.core.db"
-LAYERS_WITHOUT_DB_ACCESS = ["routes", "core/services", "core/domain"]
 
 
 def _imported_modules(path: Path) -> set[str]:
@@ -25,43 +23,77 @@ def _imported_modules(path: Path) -> set[str]:
     return modules
 
 
-@pytest.mark.parametrize("layer", LAYERS_WITHOUT_DB_ACCESS)
-def test_layer_does_not_import_db_models(layer: str) -> None:
+WEB_FRAMEWORKS = (
+    "fastapi",
+    "fastapi_pagination",
+    "starlette",
+    "strawberry",
+    "strawberry_sqlalchemy_mapper",
+)
+TRANSPORT_MODELS = ("pydantic",)
+DATABASE = ("sqlalchemy", "moviedb.core.db")
+
+# (directory under src/moviedb, import prefixes it must not use, why)
+RULES = [
+    (
+        "core",
+        WEB_FRAMEWORKS + TRANSPORT_MODELS,
+        "core is framework-agnostic: no web framework or Pydantic transport models",
+    ),
+    (
+        "core/domain",
+        DATABASE,
+        "domain models know nothing about persistence",
+    ),
+    (
+        "core/services",
+        DATABASE,
+        "services reach data only through repositories",
+    ),
+    (
+        "routes",
+        ("moviedb.core.db", "moviedb.core.repositories"),
+        "routers reach data only through services (wired in dependencies.py)",
+    ),
+    (
+        "routes/rest",
+        ("moviedb.routes.gql",),
+        "transports must not depend on each other",
+    ),
+    (
+        "routes/gql",
+        ("moviedb.routes.rest",),
+        "transports must not depend on each other",
+    ),
+]
+
+
+def _matches(module: str, prefix: str) -> bool:
+    return module == prefix or module.startswith(f"{prefix}.")
+
+
+@pytest.mark.parametrize(
+    ("layer", "forbidden", "reason"),
+    RULES,
+    ids=[f"{layer}-must-not-import-{'+'.join(f)}" for layer, f, _ in RULES],
+)
+def test_layer_respects_import_rules(
+    layer: str, forbidden: tuple[str, ...], reason: str
+) -> None:
     # Arrange
     files = sorted((SRC / layer).rglob("*.py"))
 
     # Act
     offenders = {
         str(file.relative_to(SRC)): sorted(
-            m for m in _imported_modules(file) if m.startswith(FORBIDDEN_PREFIX)
+            module
+            for module in _imported_modules(file)
+            if any(_matches(module, prefix) for prefix in forbidden)
         )
         for file in files
     }
-    offenders = {file: mods for file, mods in offenders.items() if mods}
+    offenders = {file: modules for file, modules in offenders.items() if modules}
 
     # Assert
-    assert offenders == {}
-
-
-FRAMEWORK_PREFIXES = ("fastapi", "starlette", "strawberry")
-
-
-def _is_framework(module: str) -> bool:
-    return module.split(".")[0].startswith(FRAMEWORK_PREFIXES)
-
-
-def test_core_does_not_import_web_frameworks() -> None:
-    # Arrange
-    files = sorted((SRC / "core").rglob("*.py"))
-
-    # Act
-    offenders = {
-        str(file.relative_to(SRC)): sorted(
-            m for m in _imported_modules(file) if _is_framework(m)
-        )
-        for file in files
-    }
-    offenders = {file: mods for file, mods in offenders.items() if mods}
-
-    # Assert
-    assert offenders == {}
+    assert files, f"no files found under {layer}"
+    assert offenders == {}, reason

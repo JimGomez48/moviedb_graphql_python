@@ -3,7 +3,7 @@
 ## Stack
 - Python 3.14+ (modern syntax, type unions like `str | None`)
 - FastAPI 0.141+ with `fastapi-pagination`
-- GraphQL: Strawberry (`strawberry-graphql[fastapi]`, `strawberry-sqlalchemy-mapper`)
+- GraphQL: Strawberry (`strawberry-graphql[fastapi]`)
 - Package Manager: uv (Use `uv add` and `uv run`)
 - Linters/Formatters: Ruff (Run `uv run ruff check ./` and `uv run ruff format ./`)
 - Type Checker: ty (Run `uv run ty check`)
@@ -18,16 +18,17 @@
 ## Architecture & Layers
 - Layout: Router -> Service -> Repository
 - Routers (`routes/rest`, `routes/gql`): Strictly HTTP/GraphQL routing, status codes, and input validation. No DB calls.
-- Services: Pure business logic. No HTTP types or FastAPI dependencies.
-- Repositories: Direct SQLAlchemy access through the models in `core/db/models.py`. Sessions are managed here or injected, never opened in routers.
-- Schemas: Pydantic models in `schemas/` are the transport layer. Repositories and services hand back schemas or plain data, never SQLAlchemy models, to routers.
-- `core/` holds all framework-agnostic business logic and domain models (`db/`, `services/`, `repositories/`, `errors.py`, `pagination.py`). It must not import FastAPI, Starlette, Strawberry or fastapi-pagination (enforced by a layering test). Framework adapters live in `routes/` and `dependencies.py`.
-- Services and routers must not import `moviedb.core.db` models directly (enforce with a layering test).
+- Services: Pure business logic shared by REST and GraphQL. They take and return domain models only. No HTTP types, FastAPI dependencies or Pydantic.
+- Repositories: Direct SQLAlchemy access through the models in `core/db/models.py`. They are the only place that maps ORM rows to domain models. Sessions are managed here or injected, never opened in routers.
+- Domain models: frozen dataclasses in `core/domain/` (`Actor`, `NewActor`, ...) are the transport-agnostic currency of repositories and services. Never hand SQLAlchemy models to routers.
+- Transport models: each transport owns its models and its own mapping from domain models. REST uses Pydantic models in `routes/rest/schemas/` (`from_domain()` / `to_domain()`); GraphQL uses hand-written Strawberry types in `routes/gql/types.py` (`from_domain()`). The two transports never import each other.
+- `core/` holds all framework-agnostic business logic and domain models (`domain/`, `db/`, `services/`, `repositories/`, `errors.py`, `pagination.py`). It must not import FastAPI, Starlette, Strawberry, fastapi-pagination or Pydantic. Framework adapters live in `routes/` and `dependencies.py`.
+- Services, domain models and routers must not import `moviedb.core.db` models directly, and routers must not import repositories (all enforced by `tests/test_layering.py`).
 - Dependency Injection: Always use FastAPI's `Depends()` with `Annotated`.
 - New code follows this layering. When touching existing routes that query the DB directly, migrate them to the layered structure.
 
 ## GraphQL Rules
-- Derive Strawberry types from the Pydantic read schemas in `schemas/` with `strawberry.experimental.pydantic`; do not hand-duplicate fields and never import ORM models in `routes/gql`.
+- Strawberry types are declared by hand in `routes/gql/types.py` and mapped from domain models; never import ORM models or REST schemas in `routes/gql`.
 - Prevent N+1 queries: resolve relationships through per-request dataloaders (`routes/gql/loaders.py`) that call batch service methods.
 - GraphQL resolvers call services, same as REST routers.
 
