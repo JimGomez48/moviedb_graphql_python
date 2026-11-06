@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi_pagination import Page
 
 from moviedb.dependencies import GenreServiceDep
-from moviedb.routes.rest.pagination import PageParamsDep, to_page
-from moviedb.routes.rest.schemas.genres import GenreRead
+from moviedb.rest.pagination import PageParamsDep, to_page
+from moviedb.rest.schemas.genres import GenreRead
 
 router = APIRouter(prefix="/genres", tags=["genres"])
 

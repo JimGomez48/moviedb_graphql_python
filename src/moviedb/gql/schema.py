@@ -7,8 +7,8 @@ from strawberry.types import Info
 
 from moviedb.core.errors import NotFoundError
 from moviedb.core.pagination import DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, PageParams
-from moviedb.routes.gql.context import GraphQLContext
-from moviedb.routes.gql.types import (
+from moviedb.gql.context import GraphQLContext
+from moviedb.gql.types import (
     ActorType,
     CompanyType,
     DirectorType,

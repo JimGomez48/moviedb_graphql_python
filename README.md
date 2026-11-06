@@ -25,8 +25,9 @@ REST and GraphQL share the same services.
 ```text
 src/moviedb/
   core/              framework-agnostic: domain models, services, repositories, db
-  routes/rest/       REST routers and their Pydantic schemas
-  routes/gql/        GraphQL schema, Strawberry types and dataloaders
+  rest/              REST transport: routers (rest/routes/) and Pydantic schemas
+  gql/               GraphQL transport: schema, Strawberry types and dataloaders
+  main.py            creates the app and registers both transports
   dependencies.py    wires sessions, repositories and services for the routes
 ```
 

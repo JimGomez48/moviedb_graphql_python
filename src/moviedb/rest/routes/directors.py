@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi_pagination import Page
 
 from moviedb.dependencies import DirectorServiceDep
-from moviedb.routes.rest.pagination import PageParamsDep, to_page
-from moviedb.routes.rest.schemas.directors import DirectorRead
+from moviedb.rest.pagination import PageParamsDep, to_page
+from moviedb.rest.schemas.directors import DirectorRead
 
 router = APIRouter(prefix="/directors", tags=["directors"])
 

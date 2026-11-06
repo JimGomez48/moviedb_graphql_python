@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi_pagination import Page
 
 from moviedb.dependencies import MpaaRatingServiceDep
-from moviedb.routes.rest.pagination import PageParamsDep, to_page
-from moviedb.routes.rest.schemas.mpaa_ratings import MpaaRatingRead
+from moviedb.rest.pagination import PageParamsDep, to_page
+from moviedb.rest.schemas.mpaa_ratings import MpaaRatingRead
 
 router = APIRouter(prefix="/mpaa-ratings", tags=["mpaa-ratings"])
 

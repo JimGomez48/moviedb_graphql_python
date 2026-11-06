@@ -17,7 +17,7 @@ from moviedb.core.domain.genres import Genre
 from moviedb.core.domain.movies import Movie
 from moviedb.core.domain.mpaa_ratings import MpaaRating
 from moviedb.core.domain.reviews import Review
-from moviedb.routes.gql.context import GraphQLContext
+from moviedb.gql.context import GraphQLContext
 
 type Ctx = Info[GraphQLContext, None]
 

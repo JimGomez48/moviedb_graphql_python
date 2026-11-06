@@ -11,25 +11,25 @@ from moviedb.core.domain import (
     mpaa_ratings,
     reviews,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     actors as rest_actors,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     companies as rest_companies,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     directors as rest_directors,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     genres as rest_genres,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     movies as rest_movies,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     mpaa_ratings as rest_mpaa_ratings,
 )
-from moviedb.routes.rest.schemas import (
+from moviedb.rest.schemas import (
     reviews as rest_reviews,
 )
 

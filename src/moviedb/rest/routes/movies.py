@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi_pagination import Page
 
 from moviedb.dependencies import MovieServiceDep
-from moviedb.routes.rest.pagination import PageParamsDep, to_page
-from moviedb.routes.rest.schemas.movies import MovieCreate, MovieRead
+from moviedb.rest.pagination import PageParamsDep, to_page
+from moviedb.rest.schemas.movies import MovieCreate, MovieRead
 
 router = APIRouter(prefix="/movies", tags=["movies"])
 

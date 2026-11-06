@@ -51,18 +51,23 @@ RULES = [
         "services reach data only through repositories",
     ),
     (
-        "routes",
+        "rest",
         ("moviedb.core.db", "moviedb.core.repositories"),
         "routers reach data only through services (wired in dependencies.py)",
     ),
     (
-        "routes/rest",
-        ("moviedb.routes.gql",),
+        "gql",
+        ("moviedb.core.db", "moviedb.core.repositories"),
+        "resolvers reach data only through services (wired in dependencies.py)",
+    ),
+    (
+        "rest",
+        ("moviedb.gql",),
         "transports must not depend on each other",
     ),
     (
-        "routes/gql",
-        ("moviedb.routes.rest",),
+        "gql",
+        ("moviedb.rest",),
         "transports must not depend on each other",
     ),
 ]
