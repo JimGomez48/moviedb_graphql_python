@@ -1,6 +1,6 @@
-from fastapi_pagination import Page, Params, set_page, set_params
 from sqlalchemy.orm import Session
 
+from moviedb.core.pagination import PageParams
 from moviedb.core.repositories.actors import ActorRepository
 from moviedb.schemas.actors import ActorCreate, ActorRead
 
@@ -46,13 +46,12 @@ def test_list_page_returns_ordered_schemas(session: Session) -> None:
     repo = ActorRepository(session)
     for name in ("A", "B", "C"):
         repo.create(ActorCreate(first_name=name, last_name="X"))
-    set_page(Page[ActorRead])
-    set_params(Params(page=1, size=2))
 
     # Act
-    page = repo.list_page()
+    page = repo.list_page(PageParams(page=1, size=2))
 
     # Assert
     assert page.total == 3
+    assert page.params == PageParams(page=1, size=2)
     assert [a.first_name for a in page.items] == ["A", "B"]
     assert all(isinstance(a, ActorRead) for a in page.items)

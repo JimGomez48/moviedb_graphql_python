@@ -3,6 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from moviedb.core.errors import NotFoundError
+from moviedb.core.pagination import PageParams, PageResult
 from moviedb.core.repositories.actors import ActorRepository
 from moviedb.core.services.actors import ActorService
 from moviedb.schemas.actors import ActorCreate, ActorRead
@@ -47,3 +48,19 @@ def test_create_delegates_to_repository() -> None:
     # Assert
     assert created.id == 7
     repo.create.assert_called_once_with(data)
+
+
+def test_list_delegates_paging_to_repository() -> None:
+    # Arrange
+    repo = create_autospec(ActorRepository, instance=True)
+    params = PageParams(page=2, size=5)
+    expected = PageResult(items=[], total=0, params=params)
+    repo.list_page.return_value = expected
+    service = ActorService(repo)
+
+    # Act
+    result = service.list(params)
+
+    # Assert
+    assert result is expected
+    repo.list_page.assert_called_once_with(params)

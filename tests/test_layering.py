@@ -41,3 +41,35 @@ def test_layer_does_not_import_db_models(layer: str) -> None:
 
     # Assert
     assert offenders == {}
+
+
+FRAMEWORK_PREFIXES = ("fastapi", "starlette", "strawberry")
+
+
+# TODO(graphql-migration): core/gql is Strawberry glue and must move out of core.
+KNOWN_FRAMEWORK_EXCEPTIONS = {"core/gql"}
+
+
+def _is_framework(module: str) -> bool:
+    return module.split(".")[0].startswith(FRAMEWORK_PREFIXES)
+
+
+def test_core_does_not_import_web_frameworks() -> None:
+    # Arrange
+    files = [
+        file
+        for file in sorted((SRC / "core").rglob("*.py"))
+        if file.relative_to(SRC).parent.as_posix() not in KNOWN_FRAMEWORK_EXCEPTIONS
+    ]
+
+    # Act
+    offenders = {
+        str(file.relative_to(SRC)): sorted(
+            m for m in _imported_modules(file) if _is_framework(m)
+        )
+        for file in files
+    }
+    offenders = {file: mods for file, mods in offenders.items() if mods}
+
+    # Assert
+    assert offenders == {}

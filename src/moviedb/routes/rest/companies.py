@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends
-from fastapi_pagination import Page, pagination_ctx
+from fastapi import APIRouter
+from fastapi_pagination import Page
 
 from moviedb.dependencies import CompanyServiceDep
+from moviedb.routes.rest.pagination import PageParamsDep, to_page
 from moviedb.schemas.companies import CompanyRead
 
 router = APIRouter(prefix="/companies", tags=["companies"])
 
 ListPage = Page[CompanyRead]
-list_pagination = Depends(pagination_ctx(ListPage))
 
 
-@router.get("/", dependencies=[list_pagination])
-def list_companies(service: CompanyServiceDep) -> ListPage:
-    return service.list()
+@router.get("/")
+def list_companies(service: CompanyServiceDep, params: PageParamsDep) -> ListPage:
+    return to_page(ListPage, service.list(params))
 
 
 @router.get("/{company_id}")

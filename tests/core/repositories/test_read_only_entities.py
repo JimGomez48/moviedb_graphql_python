@@ -1,9 +1,9 @@
 import importlib
 
 import pytest
-from fastapi_pagination import Page, Params, set_page, set_params
 from sqlalchemy.orm import Session
 
+from moviedb.core.pagination import PageParams
 from tests.entities import READ_ONLY_ENTITIES, EntitySpec
 from tests.helpers import seed_entity
 
@@ -44,11 +44,9 @@ def test_list_page_returns_schemas(session: Session, spec: EntitySpec) -> None:
     # Arrange
     repo_cls, schema_cls = _load(spec)
     seed_entity(session, spec, count=2)
-    set_page(Page[schema_cls])
-    set_params(Params(page=1, size=10))
 
     # Act
-    page = repo_cls(session).list_page()
+    page = repo_cls(session).list_page(PageParams(page=1, size=10))
 
     # Assert
     assert page.total == 2

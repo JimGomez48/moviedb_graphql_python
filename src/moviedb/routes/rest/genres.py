@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends
-from fastapi_pagination import Page, pagination_ctx
+from fastapi import APIRouter
+from fastapi_pagination import Page
 
 from moviedb.dependencies import GenreServiceDep
+from moviedb.routes.rest.pagination import PageParamsDep, to_page
 from moviedb.schemas.genres import GenreRead
 
 router = APIRouter(prefix="/genres", tags=["genres"])
 
 ListPage = Page[GenreRead]
-list_pagination = Depends(pagination_ctx(ListPage))
 
 
-@router.get("/", dependencies=[list_pagination])
-def list_genres(service: GenreServiceDep) -> ListPage:
-    return service.list()
+@router.get("/")
+def list_genres(service: GenreServiceDep, params: PageParamsDep) -> ListPage:
+    return to_page(ListPage, service.list(params))
 
 
 @router.get("/{genre_id}")

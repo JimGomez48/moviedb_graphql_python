@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends
-from fastapi_pagination import Page, pagination_ctx
+from fastapi import APIRouter
+from fastapi_pagination import Page
 
 from moviedb.dependencies import MpaaRatingServiceDep
+from moviedb.routes.rest.pagination import PageParamsDep, to_page
 from moviedb.schemas.mpaa_ratings import MpaaRatingRead
 
 router = APIRouter(prefix="/mpaa-ratings", tags=["mpaa-ratings"])
 
 ListPage = Page[MpaaRatingRead]
-list_pagination = Depends(pagination_ctx(ListPage))
 
 
-@router.get("/", dependencies=[list_pagination])
-def list_mpaa_ratings(service: MpaaRatingServiceDep) -> ListPage:
-    return service.list()
+@router.get("/")
+def list_mpaa_ratings(service: MpaaRatingServiceDep, params: PageParamsDep) -> ListPage:
+    return to_page(ListPage, service.list(params))
 
 
 @router.get("/{mpaa_rating_id}")

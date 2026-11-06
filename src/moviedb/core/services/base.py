@@ -1,7 +1,7 @@
-from fastapi_pagination import Page
 from pydantic import BaseModel
 
 from moviedb.core.errors import NotFoundError
+from moviedb.core.pagination import PageParams, PageResult
 from moviedb.core.repositories.base import ReadRepository
 
 
@@ -12,8 +12,8 @@ class Service[ReadType: BaseModel]:
         self._repository = repository
         self._entity_name = entity_name
 
-    def list(self) -> Page[ReadType]:
-        return self._repository.list_page()
+    def list(self, params: PageParams) -> PageResult[ReadType]:
+        return self._repository.list_page(params)
 
     def get(self, entity_id: int) -> ReadType:
         entity = self._repository.get(entity_id)

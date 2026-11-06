@@ -21,6 +21,7 @@
 - Services: Pure business logic. No HTTP types or FastAPI dependencies.
 - Repositories: Direct SQLAlchemy access through the models in `core/db/models.py`. Sessions are managed here or injected, never opened in routers.
 - Schemas: Pydantic models in `schemas/` are the transport layer. Repositories and services hand back schemas or plain data, never SQLAlchemy models, to routers.
+- `core/` holds all framework-agnostic business logic and domain models (`db/`, `services/`, `repositories/`, `errors.py`, `pagination.py`). It must not import FastAPI, Starlette, Strawberry or fastapi-pagination (enforced by a layering test). Framework adapters live in `routes/` and `dependencies.py`.
 - Services and routers must not import `moviedb.core.db` models directly (enforce with a layering test).
 - Dependency Injection: Always use FastAPI's `Depends()` with `Annotated`.
 - New code follows this layering. When touching existing routes that query the DB directly, migrate them to the layered structure.
